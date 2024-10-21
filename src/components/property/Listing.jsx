@@ -60,12 +60,14 @@ const Listing = (props) => {
       setLoading(true);
       try {
         const propertyData = await Service.fetchPropertyByCity(city);
-        setProperties(propertyData || []);
+        setProperties(propertyData || []); // Ensure propertyData is an array
 
+        
         const searchParams = new URLSearchParams(location.search);
         const type = searchParams.get("type");
         console.log("Type of property:", type);
 
+        
         if (type === "Flat") {
           setProperties(propertyData.filter((a) => a.propertyType === "Flat"));
         } else if (type === "House/Villa") {
@@ -90,6 +92,7 @@ const Listing = (props) => {
           );
         }
 
+        // Check for sorting
         const sortType = searchParams.get("sort");
         if (sortType) {
           sortProperties(propertyData, sortType);
@@ -105,6 +108,7 @@ const Listing = (props) => {
     fetchAndFilterProperties();
   }, [location.search]);
 
+  // Sorting logic
   const sortProperties = (properties, sortType) => {
     let sortedProperties = [...properties];
 
@@ -122,9 +126,10 @@ const Listing = (props) => {
 
     setProperties(sortedProperties);
   };
-
+  
   const totalPages = Math.ceil(properties.length / propertiesPerPage);
 
+  
   const indexOfLastProperty = currentPage * propertiesPerPage;
   const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
   const currentProperties = Array.isArray(properties)
@@ -157,12 +162,15 @@ const Listing = (props) => {
     event.preventDefault();
 
     props.setcompareData((prev) => {
+      
       const isAlreadySelected = prev.some((p) => p._id === property._id);
 
+      // If the property is already selected, remove it
       if (isAlreadySelected) {
         return prev.filter((p) => p._id !== property._id);
       }
 
+      // If the property is not selected and the list has fewer than 4 items, add it
       if (prev.length < 4) {
         return [...prev, property];
       } else {
@@ -178,6 +186,8 @@ const Listing = (props) => {
   const compare = () => {
     navigate("/compare-property");
   };
+
+ 
 
   const handleViewBlog = (slug) => {
     navigate(`/blog/${slug}`);
@@ -213,6 +223,7 @@ const Listing = (props) => {
       ></div>
 
       <section className="property h-[100vh] pb-14 px-10 w-full overflow-y-auto" id="property">
+        {/* <div className="container mx-auto  px-10"> */}
         <div className="px-3 flex flex-col gap-12 py-12 sticky top-0 z-30 bg-black">
           <div className="flex items-center justify-between">
             <p className="lg:text-5xl md:text-4xl text-2xl text-[#C8A21C] font-bold">
@@ -222,8 +233,13 @@ const Listing = (props) => {
               src={hamburger}
               alt="Hamburger Menu"
               className="cursor-pointer lg:w-12 md:w-11 w-9 h-auto"
+            // onClick={handleHamburger}
             />
           </div>
+          {/* 
+            
+              </div>
+            </div> */}
 
           <div className="flex justify-between gap-14 w-full flex-wrap">
             <div className="flex items-center justify-between gap-20 md:gap-36 lg:gap-36 ml-4 flex-col md:flex-row lg:flex-row">
@@ -259,7 +275,7 @@ const Listing = (props) => {
                         Price: High to Low
                       </p>
                       <p
-                        className="border-b-2 py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
+                        className="py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
                         onClick={() => {
                           handleSortClick("most-trending"), setMode(false);
                         }}
@@ -277,74 +293,181 @@ const Listing = (props) => {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <div className="flex gap-4">
-                <p className="text-[#C8A21C]">{filterCount} Filters</p>
-                <div className="flex flex-col">
-                  <button
-                    onClick={compare}
-                    className="bg-[#6CC1B6] w-16 h-10 rounded-md text-white font-bold"
+                <div className="flex items-center justify-center w-3/4 gap-4 pl-2">
+                  <div className="text-sm py-1 px-4 bg-[#EED98B] rounded-full">
+                    <p onClick={handleLocation}>{city}</p>
+                  </div>
+                  <div>
+                    <img
+                      src={loc}
+                      alt="Location"
+                      className="cursor-pointer"
+                      onClick={handleShowCity}
+                    />
+                    <div className="relative">
+                      <div
+                        className={`${showCity ? "block" : "hidden"
+                          } z-50 absolute bg-white shadow-lg rounded-lg text-center w-40 top-[25px] left-[-110px]`}
+                      >
+                        <p
+                          className="border-b-2 py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
+                        >
+                          Gomati Nagar
+                        </p>
+                        <p
+                          className="border-b-2 py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
+                        >
+                          Kharagpur
+                        </p>
+                        <p
+                          className="border-b-2 py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
+                        >
+                          Kamta
+                        </p>
+                        <p
+                          className="border-b-2 py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
+                        >
+                          Nishat Ganj
+                        </p>
+                        <p
+                          className="border-b-2 py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
+                        >
+                          Chinhat
+                        </p>
+                        <p
+                          className="border-b-2 py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
+                        >
+                          Hazratganj
+                        </p>
+                        <p
+                          className="border-b-2 py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
+                        >
+                          Indira Nagar
+                        </p>
+                        <p
+                          className="border-b-2 py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
+                        >
+                          Sunder Nagar
+                        </p>
+                        <p
+                          className="border-b-2 py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
+                        >
+                          Surender Nagar
+                        </p>
+                        <p
+                          className="border-b-2 py-2 text-lg font-medium cursor-pointer hover:bg-gray-100"
+                        >
+                          Aliganj
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    className={`absolute lg:left-28 left-[-20px] flex lg:gap-3 z-50 ${Location ? "block" : "hidden"
+                      }`}
                   >
-                    Compare
-                  </button>
+                    <div>
+                      <img
+                        src={cross}
+                        alt="Close"
+                        onClick={handleLocation}
+                        className="cursor-pointer"
+                      />
+                    </div>
+                    <SelectLocation />
+                  </div>
                 </div>
               </div>
-
-              <div className="flex gap-4">
-                <button
-                  onClick={handleAddPropertybtn}
-                  className="bg-[#6CC1B6] h-10 w-24 rounded-md text-white font-bold flex items-center justify-center"
-                >
-                  <IoAdd className="mr-2" />
-                  Add Property
-                </button>
+              <div className="h-14 w-56 bg-white text-black flex items-start justify-between px-5 rounded-md">
+                <div className="flex items-center justify-start gap-4 h-full w-2/4">
+                  <div className="h-6 w-6 bg-[#EED98B] rounded-full flex items-center justify-center">
+                    {filterCount}
+                  </div>
+                  <div>Filters</div>
+                </div>
+                <div className="h-full flex items-center justify-center w-1/4 cursor-pointer rounded-full">
+                  <img
+                    src={drop}
+                    alt="Dropdown"
+                    onClick={handleOpen}
+                    className="cursor-pointer"
+                  />
+                </div>
               </div>
+            </div>
+
+            <div className="compare" onClick={compare}>
+              {props.compareData.length >= 1 && (
+                <button
+                  className={`bg-white h-14 w-44 text-black rounded-md flex gap-5 text-center items-center py-3 px-6 font-medium ${props.compareData.length <= 1
+                    ? "opacity-50 grayscale cursor-not-allowed"
+                    : ""
+                    }`}
+                  disabled={props.compareData.length <= 1}
+                >
+                  Compare
+                  <div className="h-6 w-6 bg-[#EED98B] rounded-full flex items-center justify-center">
+                    {props.compareData.length}
+                  </div>
+                </button>
+              )}
+            </div>
+
+            <div>
+              <a
+                onClick={handleAddPropertybtn}
+                className="mr-2 bg-white w-44 h-14 text-black flex items-center justify-center px-5 rounded-md cursor-pointer"
+              >
+                Add Property
+              </a>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-5 mt-8">
-          <SideOpt
-            handleOpen={handleOpen}
-            isOpen={isOpen}
-            setProperties={setProperties}
-            city={city}
-            updateFilterCount={updateFilterCount}
-          />
-
-          <SelectLocation
-            showCity={showCity}
-            setShowCity={setShowCity}
-            city={city}
-          />
-
-          <Filters
-            handleLocation={handleLocation}
-            Location={Location}
-            setProperties={setProperties}
-            city={city}
-            updateFilterCount={updateFilterCount}
-          />
+        <div
+          className={`min-w-full min-h-fit absolute z-30 top-32 flex items-center justify-center ${isOpen ? "block" : "hidden"
+            } `}
+        >
+          <div className="relative w-full max-w-lg">
+            <Filters
+              SetIsOpen={SetIsOpen}
+              setProperties={setProperties}
+              city={city}
+              updateFilterCount={updateFilterCount}
+              filterCount={filterCount}
+            />
+            <div className="absolute top-1 right-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                onClick={handleOpen}
+                className="cursor-pointer w-5 lg:w-6 md:w-6 z-50 text-red-400 hover:text-red-800 transition-colors duration-300"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col items-center">
-          <Cards
-            currentProperties={currentProperties}
-            handleToggle={handleToggle}
-            isInCompareList={isInCompareList}
-            handleViewBlog={handleViewBlog}
-          />
-        </div>
-
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          handlePreviousPage={handlePreviousPage}
-          handleNextPage={handleNextPage}
-          onPageChange={onPageChange}
+        <Cards
+          properties={properties}
+          handleToggle={handleToggle}
+          isInCompareList={isInCompareList}
         />
+        {/* </div> */}
       </section>
+
+      <Pagination
+        properties={properties}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPages={totalPages}
+      />
     </>
   );
 };
